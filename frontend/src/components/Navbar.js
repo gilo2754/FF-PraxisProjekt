@@ -4,13 +4,8 @@ import { Link } from 'react-router-dom';
 import { AUTH_TOKEN } from '../constants';
 import { useHistory } from 'react-router';
 
-
-//class Navbar extends Component {
-    const Navbar = () => {
-
-    //render() {
-        const history = useHistory();
-        const authToken = localStorage.getItem(AUTH_TOKEN);
+export default class Navbar extends Component {
+    render() {
         return (
             <nav className="navbar navbar-expand-md navbar-dark bg-dark">
                 <div className="container-fluid">
@@ -25,7 +20,7 @@ import { useHistory } from 'react-router';
 
                     {/* Middle */}
                     <div className="mx-auto order-0">
-                        <Link to="/" className="navbar-brand mx-auto">Hooked</Link>
+                        <Link to="/" className="navbar-brand mx-auto">Hooked {Branch}</Link>
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                                 data-bs-target=".dual-collapse" aria-controls=".dual-collapse"
                                 aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +29,6 @@ import { useHistory } from 'react-router';
                     </div>
 
                     {/* Right */}
-
                     <div className="collapse navbar-collapse w-100 order-3 dual-collapse">
                         <ul className="navbar-nav ms-auto">
                             {/* TODO require not logged in */}
@@ -45,12 +39,8 @@ import { useHistory } from 'react-router';
                                 <Link to="/login" className="nav-link" >Login</Link>
                             </li>
                         </ul>
-                            
                     </div>
-                </div>
-
-            
-                
+                </div>      
             </nav>
         );
     }

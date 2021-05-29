@@ -1,6 +1,13 @@
-export const [passwordMinLength, passwordMaxLength] = [8, 72];
-export const passwordAllowedSpecialCharacters = "*.!@#$%^&(){}:;<>,.?~_=|" //special characters that dont need escaping in regex. //OPTIMIZE add more allowed special characters
-export const [usernameMinLength, usernameMaxLength] = [3, 16];
+/**
+ * bcrypt only uses the first 72 BYTES for its hash. Any char more will produce the same hash.
+ * We use UTF8 - meaning if sb uses unicode chars (1̵̤͒Äà🎈🎗😁 etc.) someone might enter a 72 char pw, but 100+ bytes
+ * This means that the last characters are irrelevant for the password and can be changed in the password query.
+ *
+ * We only allow chars that use 1 byte for the password
+ */
+const [passwordMinLength, passwordMaxLength] = [8, 72];
+const passwordAllowedSpecialCharacters = "*.!@#$%^&(){}:;<>,.?~_=|" //special characters that dont need escaping in regex. //OPTIMIZE add more allowed special characters
+const [usernameMinLength, usernameMaxLength] = [3, 16];
 
 /**
  * Returns true if the string matches the following rules:
@@ -13,6 +20,15 @@ export const [usernameMinLength, usernameMaxLength] = [3, 16];
 function containsOnlyAllowedCharacters(str, specialCharacters = passwordAllowedSpecialCharacters) {
     const regex = new RegExp(`^[a-zA-Z0-9${specialCharacters}]+$`)
     return regex.test(str)
+}
+
+/**
+ * Returns true if the string only contains alphanumeric characters
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isAlphanumeric(str) {
+    return containsOnlyAllowedCharacters(str, "")
 }
 
 /**
@@ -74,7 +90,7 @@ function isLengthAllowed(str, minLength, maxLength) {
  * @param {number} maxLength
  * @return {boolean} password passed all checks
  */
-export function passwordValid(password, specialCharacters = passwordAllowedSpecialCharacters, minLength = passwordMinLength, maxLength = passwordMaxLength) {
+function passwordValid(password, specialCharacters = passwordAllowedSpecialCharacters, minLength = passwordMinLength, maxLength = passwordMaxLength) {
     //console.log(password, minLength, maxLength)
     return (
         isLengthAllowed(password, minLength, maxLength) &&
@@ -90,7 +106,7 @@ export function passwordValid(password, specialCharacters = passwordAllowedSpeci
  * @param {String} email
  * @return {boolean} email passed all checks
  */
-export function emailValid(email) {
+function emailValid(email) {
     return (
         isEmail(email)
     )
@@ -103,8 +119,25 @@ export function emailValid(email) {
  * @param {number} maxLength
  * @return {boolean}
  */
-export function usernameValid(username, minLength = usernameMinLength, maxLength = usernameMaxLength) {
+function usernameValid(username, minLength = usernameMinLength, maxLength = usernameMaxLength) {
     return (
         isLengthAllowed(username, minLength, maxLength)
     )
+}
+
+module.exports = {
+    passwordMinLength,
+    passwordMaxLength,
+    passwordAllowedSpecialCharacters,
+    containsOnlyAllowedCharacters,
+    containsLower,
+    containsUpper,
+    containsDigit,
+    passwordValid,
+    usernameMinLength,
+    usernameMaxLength,
+    isAlphanumeric,
+    usernameValid,
+    isEmail,
+    emailValid
 }
